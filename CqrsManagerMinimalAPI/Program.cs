@@ -1,6 +1,12 @@
+using CqrsManagerMinimalAPI.Data;
 using CqrsManagerMinimalAPI.Handlers.Create;
+using CqrsManagerMinimalAPI.Handlers.Delete;
+using CqrsManagerMinimalAPI.Handlers.FindAll;
+using CqrsManagerMinimalAPI.Handlers.FindById;
+using CqrsManagerMinimalAPI.Handlers.Update;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 // Add services to the container.
 
@@ -8,8 +14,23 @@ builder.Services.AddControllers();
 
 #region Register services
 
+//Reguister data cache
+builder.Services.AddSingleton<IProductRepository, InMemoryProductRepository>();
+
 // Register Create
 builder.Services.AddScoped<ICreateProductHandler, CreateProductHandler>();
+
+//Register FindById
+builder.Services.AddScoped<IFindProductByIdHandler, FindProductByIdHandler>();
+
+//Register FindAll
+builder.Services.AddScoped<IFindAllProductsHandler, FindAllProductsHandler>();
+
+//Register Update
+builder.Services.AddScoped<IUpdateProductHandler, UpdateProductHandler>();
+
+//Register Delete
+builder.Services.AddScoped<IDeleteProductHandler, DeleteProductHandler>();
 
 #endregion
 

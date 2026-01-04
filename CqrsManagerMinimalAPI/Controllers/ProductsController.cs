@@ -1,6 +1,12 @@
 using CqrsManagerMinimalAPI.Commands.Requests;
 using CqrsManagerMinimalAPI.Handlers.Create;
+using CqrsManagerMinimalAPI.Handlers.Delete;
+using CqrsManagerMinimalAPI.Handlers.FindAll;
+using CqrsManagerMinimalAPI.Handlers.FindById;
+using CqrsManagerMinimalAPI.Handlers.Update;
 using CqrsManagerMinimalAPI.Models;
+using CqrsManagerMinimalAPI.Queries.Requests;
+using CqrsManagerMinimalAPI.Queries.Responses;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CqrsManagerMinimalAPI.Controllers
@@ -11,9 +17,21 @@ namespace CqrsManagerMinimalAPI.Controllers
     {
 
         [HttpGet]
-        public List<Product> Get()
+        public List<FindAllProductsResponse> Get([FromServices] IFindAllProductsHandler handler)
         {
-            return new List<Product>();
+            var products = handler.Handle();
+
+            return products;
+        }
+
+        [HttpGet("id")]
+        public IActionResult GetById(
+                  [FromServices] IFindProductByIdHandler handler,
+                  [FromQuery] FindProductByIdRequest command
+              )
+        {
+            var response = handler.Handle(command);
+            return Ok(response);
         }
 
         [HttpPost]
@@ -25,5 +43,28 @@ namespace CqrsManagerMinimalAPI.Controllers
             var response = handler.Handle(command);
             return Ok(response);
         }
+
+        [HttpPut]
+        public IActionResult Update(
+           [FromServices] IUpdateProductHandler handler,
+           [FromBody] UpdateProductRequest command
+       )
+        {
+            var response = handler.Handle(command);
+            return Ok(response);
+        }
+
+        [HttpDelete]
+        public IActionResult Delete(
+           [FromServices] IDeleteProductHandler handler,
+           [FromBody] DeleteProductRequest command
+       )
+        {
+            var response = handler.Handle(command);
+            return Ok(response);
+        }
+
+
+
     }
 }

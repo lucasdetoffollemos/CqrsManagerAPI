@@ -1,11 +1,17 @@
 ﻿using CqrsManagerMinimalAPI.Commands.Requests;
 using CqrsManagerMinimalAPI.Commands.Responses;
+using CqrsManagerMinimalAPI.Data;
 using CqrsManagerMinimalAPI.Models;
 
 namespace CqrsManagerMinimalAPI.Handlers.Create
 {
     public class CreateProductHandler : ICreateProductHandler
     {
+        private readonly IProductRepository _productRepository;
+        public CreateProductHandler(IProductRepository productRepository)
+        {
+            _productRepository = productRepository;
+        }
         public CreateProductResponse Handle(CreateProductRequest command)
         {
             var product = new Product(
@@ -15,7 +21,7 @@ namespace CqrsManagerMinimalAPI.Handlers.Create
                 command.IsInStock
             );
 
-            //we need to save in a global list
+            _productRepository.Add(product);
 
             return new CreateProductResponse
             {
